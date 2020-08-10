@@ -135,6 +135,30 @@ app.post('/api/artists/create', (req, res) => {
   );
 });
 
+// DELETE Delete a single Playlist
+app.delete('/api/playlists/:id', (req, res) => {
+  let { id } = req.params;
+
+  Playlist.findByPk(id)
+    .then((playlist) => {
+      if (playlist) {
+        return playlist.setTracks([]).then(() => {
+          return playlist.destroy();
+        });
+      } else {
+        return Promise.reject();
+      }
+    })
+    .then(
+      () => {
+        res.status(204).send();
+      },
+      () => {
+        res.status(404).send();
+      }
+    );
+});
+
 app.listen(port, () =>
   console.log(`App listening at http://localhost:${port}`)
 );
