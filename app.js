@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const Playlist = require('./models/playlist');
 const Artist = require('./models/artist');
 const Album = require('./models/album');
@@ -8,6 +9,8 @@ const Sequelize = require('sequelize');
 const app = express();
 const port = process.env.PORT || 5000;
 const { Op } = Sequelize;
+
+app.use(bodyParser.json());
 
 // Database Relations Start -----
 
@@ -107,6 +110,29 @@ app.get('/api/albums/:id', (req, res) => {
       res.status(404).send();
     }
   });
+});
+
+// POST Create a Artist
+app.post('/api/artists/create', (req, res) => {
+  let { name } = req.body;
+
+  Artist.create({
+    name,
+  }).then(
+    (artist) => {
+      res.json(artist);
+    },
+    (validation) => {
+      res.status(422).json({
+        errors: validation.errors.map((error) => {
+          return {
+            attribute: error.path,
+            message: error.message,
+          };
+        }),
+      });
+    }
+  );
 });
 
 app.listen(port, () =>
