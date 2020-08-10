@@ -1,0 +1,31 @@
+{
+  "name": "music-warehouse",
+  "version": "1.0.0",
+  "description": "Music Warehouse Backend with Node, Express and Sequelize. Covers Musics, Tracks, Albums and Authors with relational database.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NemesLaszlo/Music-Warehouse.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "sequelize",
+    "sqlite3"
+  ],
+  "author": "Laszlo Nemes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NemesLaszlo/Music-Warehouse/issues"
+  },
+  "homepage": "https://github.com/NemesLaszlo/Music-Warehouse#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "sequelize": "^6.3.4",
+    "sqlite3": "^5.0.0"
+  }
+}
