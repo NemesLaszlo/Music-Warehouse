@@ -2,6 +2,7 @@ const express = require('express');
 const Playlist = require('./models/playlist');
 const Artist = require('./models/artist');
 const Album = require('./models/album');
+const Track = require('./models/track');
 const Sequelize = require('sequelize');
 
 const app = express();
@@ -10,6 +11,7 @@ const { Op } = Sequelize;
 
 // Database Relations Start -----
 
+// ----
 Artist.hasMany(Album, {
   foreignKey: 'ArtistId',
 });
@@ -17,6 +19,21 @@ Artist.hasMany(Album, {
 Album.belongsTo(Artist, {
   foreignKey: 'ArtistId',
 });
+// ----
+
+// ----
+Playlist.belongsToMany(Track, {
+  through: 'playlist_track',
+  foreignKey: 'PlaylistId',
+  timestamps: false,
+});
+
+Track.belongsToMany(Playlist, {
+  through: 'playlist_track',
+  foreignKey: 'TrackId',
+  timestamps: false,
+});
+// ----
 
 // Database Relations End -----
 
@@ -44,7 +61,7 @@ app.get('/api/playlists', (req, res) => {
 app.get('/api/playlists/:id', (req, res) => {
   let { id } = req.params;
 
-  Playlist.findByPk(id).then((playlist) => {
+  Playlist.findByPk(id, { include: [Track] }).then((playlist) => {
     if (playlist) {
       res.json(playlist);
     } else {
@@ -53,7 +70,20 @@ app.get('/api/playlists/:id', (req, res) => {
   });
 });
 
-// GET Read a specific Artist with all albums what its own
+// GET Read a specific Track with the Playlists where this track is part of them
+app.get('/api/tracks/:id', (req, res) => {
+  let { id } = req.params;
+
+  Track.findByPk(id, { include: [Playlist] }).then((track) => {
+    if (track) {
+      res.json(track);
+    } else {
+      res.status(404).send();
+    }
+  });
+});
+
+// GET Read a specific Artist with all Albums what its own
 app.get('/api/artists/:id', (req, res) => {
   let { id } = req.params;
 
@@ -66,7 +96,7 @@ app.get('/api/artists/:id', (req, res) => {
   });
 });
 
-// GET Read a specific album with the artist
+// GET Read a specific Album with the Artist
 app.get('/api/albums/:id', (req, res) => {
   let { id } = req.params;
 
